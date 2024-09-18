@@ -1,0 +1,44 @@
+body{
+    padding: 0;
+    margin: 0;
+    background-color: burlywood;
+    font-family: 'Roboto', sans-serif;
+}
+
+header{
+    width:100% ;
+    height: 70px;
+    background-color: darkgray;
+}
+
+.header-wrapper{
+    height: 100%;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 30px;
+    color: white;
+}
+.nav{
+    display: flex;
+    gap: 30px;
+}
+button{
+    height: 55px;
+    width: 85px;
+
+}
+main{
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    gap: 10px;
+    margin: 0 50px;
+    justify-content: space-between;
+    background-color: aqua;
+}
