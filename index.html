@@ -22,21 +22,26 @@
     </header>
 
     <main>
-        <p>
-            asd
-            asd
-            asdas
-            asd
-            asd
-            asd
-            asd
-            asd
-            asd
-            asd
-            asd
-            asd
-            asd
-        </p>
+        <form id="registerForm" action="http://localhost:5000/register" method="POST">
+            <label for="name">Name</label><br>
+            <input type="name" id="name" name="name" required>
+            <br>
+            <label for="surrname">Surrname</label><br>
+            <input type="surrname" id="surrname" name="surrname">
+            <br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="phone">Phone number:</label><br>
+            <input type="phone" id="phone" name="phone" required>
+            <br>
+            <label for="certif_number">Certificate number</label><br>
+            <input type="certif_number" id="certif_number" name="certif_number"><br>
+            <label for="password_">Password:</label><br>
+            <input type="password" id="password_" name="password_" required>
+            <br>
+            <button type="submit">Login</button>
+        </form>
     </main>
 
     <footer>
