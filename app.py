@@ -1,9 +1,9 @@
-from flask import Flask,request,jsonify
+import pymysql
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-import  pymysql
-import bcrypt
+
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 connection = pymysql.connect(
     host='localhost',
     user='root',  # Replace with your MySQL username
@@ -22,33 +22,23 @@ try:
 
 finally:
     pass
-'''
-@app.route('/submit', methods=['POST'])
-def submit():
-    email = request.form['email']
-    password = request.form['password_']
-    password_ = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-    try:
-        # Insert the data into MySQL
-        with connection.cursor() as cursor2:
-            sql = "INSERT INTO users (email, password_) VALUES (%s, %s)"
-            cursor2.execute(sql, (email, password_))
-            connection.commit()
 
-        print(f"Thank you, your data has been saved!")
-        return jsonify({"message": "Form submitted successfully!"})
-    except pymysql.MySQLError as err:
-        print(f"Error: {err}")
-        return jsonify({"error": str(err)})
-'''
-@app.route('/login',methods=['POST'])
+
+
+
+@app.route('/api/login',methods=['POST'])
 def login():
-    email = request.form['email']
-    password = request.form['password_']
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
     with connection.cursor() as cursor3:
-        sql = "SELECT * FROM users INNER JOIN parent ON users.parent_id = parent.id where parent.email = %s"
-        cursor3.execute(sql,email)
+        sql = ("SELECT * FROM users "
+               "where users.parent_id = (SELECT id FROM parent WHERE parent.email = %s) "
+               "OR users.teacher_id = (SELECT id FROM teacher WHERE teacher.email = %s)")
+        cursor3.execute(sql, (email,email))
         user = cursor3.fetchone()
+        print(email, password)
+        print(user)
         if user is not None:
             stored_password = user[2]
             if stored_password == password:
@@ -59,7 +49,19 @@ def login():
             return jsonify({"message": "User not found", "status": "error"}), 404
 
 
-@app.route('/register',methods=['POST'])
+
+@app.route('/api/course', methods=['GET'])
+def course():
+    try:
+        with connection.cursor() as cursor2:
+            sql = "SELECT name, description, start_date, end_date, payed FROM course"
+            cursor2.execute(sql)
+            courses = cursor2.fetchall()
+            return jsonify(courses), 200
+    except Exception as e:
+        return jsonify({"message": "An error occurred", "error": str(e)}), 500
+
+@app.route('/api/register',methods=['POST'])
 #register methode for administator ui
 def register():
     #variables
@@ -76,7 +78,7 @@ def register():
         cursor2.execute(sql,(name,surrname,email,phone,cn))
         connection.commit()
         sql3 = "SELECT parent.id FROM parent WHERE parent.email = %s"
-        cursor2.execute(sql3,(email))
+        cursor2.execute(sql3, email)
         parent = cursor2.fetchone()
         parent_id = parent[0]
         sql2 = "INSERT INTO users (parent_id,password_) VALUES (%s,%s)"
@@ -85,6 +87,9 @@ def register():
     #client displey message
     print(f"Thank you, your data has been saved!")
     return jsonify({"message": "Form submitted successfully!"})
+
+
+
 
 
 
